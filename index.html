@@ -4,6 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>কাশিমনগর সরকারি প্রাথমিক বিদ্যালয় | ডিজিটাল ব্যবস্থাপনা সিস্টেম</title>
+    <style id="splash-css">
+        html{background:#0b3d26}
+        #welcomeSplash{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;color:#fff;padding:1.5rem;font-family:"Noto Sans Bengali","Nirmala UI","Vrinda",system-ui,sans-serif;background:radial-gradient(circle at 20% 15%,#1f8a4c 0,transparent 45%),radial-gradient(circle at 85% 90%,#0d6b3a 0,transparent 50%),linear-gradient(145deg,#0b3d26,#14532d 55%,#16a34a);transition:opacity .6s ease,transform .6s ease}
+        #welcomeSplash.off{opacity:0;transform:scale(1.04);pointer-events:none}
+        #welcomeSplash .ws-bub{position:absolute;border-radius:50%;background:rgba(253,224,71,.10);animation:wsFloat 7s ease-in-out infinite}
+        #welcomeSplash .ws-b1{width:180px;height:180px;left:-50px;top:12%}
+        #welcomeSplash .ws-b2{width:120px;height:120px;right:8%;top:8%;animation-delay:-2s;background:rgba(255,255,255,.07)}
+        #welcomeSplash .ws-b3{width:240px;height:240px;right:-70px;bottom:6%;animation-delay:-4s}
+        #welcomeSplash .ws-b4{width:90px;height:90px;left:12%;bottom:10%;animation-delay:-1s;background:rgba(255,255,255,.08)}
+        @keyframes wsFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-22px)}}
+        #welcomeSplash .ws-in{position:relative;max-width:640px;animation:wsUp .8s cubic-bezier(.2,.8,.2,1) both}
+        @keyframes wsUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+        #welcomeSplash .ws-logo{position:relative;width:128px;height:128px;margin:0 auto 22px}
+        #welcomeSplash .ws-ring{position:absolute;inset:0;border-radius:50%;border:3px dashed #fde047;animation:wsSpin 12s linear infinite}
+        #welcomeSplash .ws-pulse{position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(253,224,71,.55);animation:wsPulse 2s ease-out infinite}
+        #welcomeSplash .ws-core{position:absolute;inset:12px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#16794a,#0c3b27);border:3px solid #fde047;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fde047;font-size:15px;line-height:1.3;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+        @keyframes wsSpin{to{transform:rotate(360deg)}}
+        @keyframes wsPulse{0%{transform:scale(.95);opacity:1}100%{transform:scale(1.35);opacity:0}}
+        #welcomeSplash h1{font-size:clamp(2.2rem,8vw,3.2rem);font-weight:800;margin:0 0 10px;letter-spacing:.5px;text-shadow:0 4px 18px rgba(0,0,0,.3)}
+        #welcomeSplash .ws-sub{font-size:clamp(1rem,3.6vw,1.2rem);color:#fde047;margin:0 0 4px;font-weight:600}
+        #welcomeSplash .ws-msg{font-size:.95rem;color:#d1fae5;margin:0 0 26px}
+        #welcomeSplash .ws-bar{width:min(280px,70vw);height:6px;margin:0 auto 10px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden}
+        #welcomeSplash .ws-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#fde047,#86efac);animation:wsBar 2.4s cubic-bezier(.4,0,.2,1) forwards}
+        @keyframes wsBar{to{width:88%}}
+        #welcomeSplash.ws-ready .ws-bar i{animation:none;width:100%;transition:width .3s}
+        #welcomeSplash .ws-load{font-size:.8rem;color:#bbf7d0;letter-spacing:.3px}
+        @media (prefers-reduced-motion:reduce){#welcomeSplash *{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+    </style>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- মোবাইল অ্যাপ (PWA) সেটিংস -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#14532d">
@@ -14,13 +46,14 @@
     <link rel="icon" type="image/png" href="icon-192.png">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Noto Sans Bengali & Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
     <!-- FontAwesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     <script>
-        tailwind.config = {
+        window.__twCfg = {
             theme: {
                 extend: {
                     fontFamily: {
@@ -42,6 +75,7 @@
             }
         }
     </script>
+    <script async src="https://cdn.tailwindcss.com" onload="try{tailwind.config=window.__twCfg}catch(e){}window.__twAt=Date.now()" onerror="window.__twAt=Date.now()"></script>
     <style>
         @media print {
             body * { visibility: hidden; }
@@ -87,8 +121,6 @@
         .tp-in { width:100%; min-width:110px; padding:.35rem .4rem; border:2px solid #6ee7b7; border-radius:.5rem; font-size:.8rem; background:#fff; }
         .tp-st { padding:.3rem .8rem; border-radius:.6rem; font-size:.8rem; font-weight:700; color:#fff; }
         .tp-st.s { background:#16a34a; } .tp-st.l { background:#f59e0b; color:#1f2937; }
-        #welcomeSplash { position:fixed; inset:0; z-index:9999; display:flex; align-items:center; justify-content:center; text-align:center; background:linear-gradient(135deg,#14532d,#16a34a); color:#fff; transition:opacity .6s; padding:1.5rem; }
-        #welcomeSplash.off { opacity:0; pointer-events:none; }
 
         /* ===== নতুন ড্যাশবোর্ড ডিজাইন (dashboard.html থেকে) ===== */
 
@@ -224,11 +256,30 @@ body.dz-dash-page { background: var(--page); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col font-sans antialiased min-h-screen">
-    <div id="welcomeSplash"><div>
-        <div style="width:96px;height:96px;margin:0 auto 14px;border-radius:50%;background:#0c3b27;border:4px solid #fde047;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fde047;font-size:13px;line-height:1.3">কাশিমনগর<br>সপ্রাবি</div>
-        <h1 style="font-size:2.2rem;font-weight:700;margin:0 0 8px">স্বাগতম!</h1>
-        <p style="font-size:1.1rem;color:#fde047;margin:0">কাশিমনগর সরকারি প্রাথমিক বিদ্যালয়ের ডিজিটাল ব্যবস্থাপনা সিস্টেমে আপনাকে স্বাগতম</p>
-    </div></div>
+    <div id="welcomeSplash" role="status" aria-live="polite">
+        <span class="ws-bub ws-b1"></span><span class="ws-bub ws-b2"></span><span class="ws-bub ws-b3"></span><span class="ws-bub ws-b4"></span>
+        <div class="ws-in">
+            <div class="ws-logo"><span class="ws-pulse"></span><span class="ws-ring"></span><div class="ws-core">কাশিমনগর<br>সপ্রাবি</div></div>
+            <h1>স্বাগতম!</h1>
+            <p class="ws-sub">কাশিমনগর সরকারি প্রাথমিক বিদ্যালয়</p>
+            <p class="ws-msg">ডিজিটাল ব্যবস্থাপনা সিস্টেমে আপনাকে আন্তরিক স্বাগতম</p>
+            <div class="ws-bar"><i></i></div>
+            <div class="ws-load">অনুগ্রহ করে অপেক্ষা করুন…</div>
+        </div>
+    </div>
+    <script>
+    (function () {
+        var s = document.getElementById('welcomeSplash'), t0 = Date.now(), MIN = 2400, MAX = 7000, ready = false, done = false;
+        document.addEventListener('DOMContentLoaded', function () { ready = true; });
+        window.addEventListener('load', function () { ready = true; });
+        function hide() { if (done) return; done = true; s.classList.add('ws-ready'); setTimeout(function () { s.classList.add('off'); setTimeout(function () { if (s.parentNode) s.parentNode.removeChild(s); }, 700); }, 250); }
+        (function tick() {
+            if (done) return;
+            var el = Date.now() - t0, twOk = window.__twAt && Date.now() - window.__twAt > 700;
+            if (el >= MAX || (el >= MIN && ready && twOk)) hide(); else setTimeout(tick, 100);
+        })();
+    })();
+    </script>
 
 
     <!-- Top Header Banner (নতুন ড্যাশবোর্ড ডিজাইন) -->
@@ -3603,8 +3654,7 @@ body.dz-dash-page { background: var(--page); }
         if (a === 'edit') tpEdit(id); else if (a === 'del') tpDel(id); else if (a === 'save') tpSave(id);
     });
     window.addEventListener('fbs-auth', () => { try { renderT(); renderTeacherSync(); } catch (e) {} });
-    // ওয়েলকাম মেসেজ (প্রায় ৩ সেকেন্ড)
-    setTimeout(() => { const s = document.getElementById('welcomeSplash'); if (s) { s.classList.add('off'); setTimeout(() => s.remove(), 700); } }, 2800);
+    // ওয়েলকাম মেসেজ: <body>-এর শুরুতে নিজস্ব স্ক্রিপ্টে নিয়ন্ত্রিত
 })();
 
     </script>
