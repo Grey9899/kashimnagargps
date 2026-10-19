@@ -1,0 +1,30 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // শুধু এই তালিকার ই-মেইলে লগইন করা শিক্ষকরাই ডেটা দেখতে ও বদলাতে পারবেন।
+    // নিচের উদাহরণ ই-মেইল মুছে এই বিদ্যালয়ের প্রধান শিক্ষক ও সব শিক্ষকের আসল জিমেইল বসান।
+    // প্রতিটি ই-মেইল একক উদ্ধৃতি চিহ্নের ভেতরে, শেষে কমা (শেষটি ছাড়া)। ছোট হাতের অক্ষরে লিখুন।
+    // নতুন শিক্ষক এলে এখানে তাঁর ই-মেইল যোগ করে "Publish" চাপতে হবে।
+    function isTeacher() {
+      return request.auth != null
+        && request.auth.token.email in [
+          'ngps.bir127@gmail.com',
+          'teacher1@example.com',
+          'teacher2@example.com'
+        ];
+    }
+
+    match /sync/{key} {
+      allow read: if isTeacher();
+      allow write: if isTeacher()
+        && request.resource.data.keys().hasOnly(['value', 'updatedAt', 'by']);
+    }
+
+    // বাকি সবকিছু বন্ধ
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
