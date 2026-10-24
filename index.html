@@ -6116,5 +6116,174 @@ body.dz-dash-page { background: var(--page); }
 })();
 </script>
 
+<style id="kgAccStyle">
+.kg-ro #nav-backup,.kg-ro #tab-backup,.kg-ro .dz-a1,.kg-ro .dz-a2,.kg-ro #galleryDrop,.kg-ro #kglAdd,.kg-ro #kglSug,.kg-ro .kg-adm{display:none!important}
+.kg-ro #tab-teachers>div:not(#kgTList){display:none!important}
+.kg-ro #tab-evaluation input:not([type=checkbox]),.kg-ro #tab-evaluation textarea,.kg-ro #tab-glance input,.kg-ro #tab-glance textarea,.kg-ro #tab-glance select{pointer-events:none;background-color:#f1f5f9}
+#kgTList{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:16px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+#kgTList h2{font-weight:800;font-size:1.2rem;color:#065f46;margin:0 0 4px}
+#kgTList .kt-sub{font-size:12px;color:#64748b;margin-bottom:10px}
+#kgTList .kt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+#kgTList .kt-c{display:flex;align-items:center;gap:10px;border:1px solid #e2e8f0;border-radius:14px;padding:10px;background:#f8fafc}
+#kgTList .kt-p{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#d1fae5;color:#047857;display:flex;align-items:center;justify-content:center;flex:none;font-weight:800}
+#kgTList .kt-n{font-weight:800;font-size:14px;line-height:1.3}#kgTList .kt-d{font-size:12px;color:#64748b}
+#kgTList .kt-s{margin-left:auto;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap}
+#kgTList .kt-s.on{background:#d1fae5;color:#047857}#kgTList .kt-s.off{background:#fef3c7;color:#b45309}
+#kgTList input{width:100%;padding:8px 10px;border:1px solid #cbd5e1;border-radius:10px;margin-bottom:10px;font:inherit;font-size:13px}
+#kgAccToast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:99999;max-width:90vw;opacity:0;transition:opacity .25s;pointer-events:none}
+#kgRoBar{display:none;background:#fef9c3;border-bottom:1px solid #fde68a;color:#854d0e;font-size:12.5px;font-weight:600;text-align:center;padding:5px 10px}
+.kg-ro #kgRoBar{display:block}
+#kgAutoCard .kg-auto-state{font-size:13px;font-weight:600}
+</style>
+<script id="kgAccJs">
+(function () {
+  const ATT = 'kashimnagar_attendance', AUTO = 'kashimnagar_gps_auto', GEO = 'kashimnagar_school_geo', RAD = 'kashimnagar_school_radius', TK = 'kashimnagar_teachers';
+  const LOCKED = ['kashimnagar_school_holidays', 'kashimnagar_exam_routine', 'kashimnagar_school_profile', 'kashimnagar_social_links', AUTO, 'students', 'lessonPlans', 'kashimnagar_glance_data', 'kashimnagar_senior_officers', 'kashimnagar_evaluation', 'kashimnagar_stu_attendance', 'kashimnagar_report_extra', TK, 'kashimnagar_class_routine', 'kashimnagar_home_visits', 'kashimnagar_links', 'kashimnagar_stu_section', 'kashimnagar_teacher_leaves', GEO, RAD, 'kashimnagar_last_visit_geo', 'kashimnagar_last_visit_date', 'kashimnagar_last_visit_officer', 'kashimnagar_last_visit_desig', 'kashimnagar_visit_desig_options'];
+  const DENY = ['openStudentModal', 'editStudent', 'deleteStudent', 'spEdit', 'spDel', 'stClearPhoto', 'deletePhotoAt', 'deleteCurrentPhoto', 'openLessonModal', 'deleteLesson', 'lpDelSlot', 'lpAddSlot', 'tpAdd', 'tpSave', 'tpSchool', 'tpJsonOut', 'tpCsv', 'openSocialModal', 'saveSocial', 'saveOfficers', 'saveGlanceData', 'saveDesigOptions', 'resetDesigOptions', 'addDesigRow', 'openDesigModal', 'setSchoolManual', 'setSchoolHere', 'saveRadius', 'recordVisitGeo', 'editVisit', 'cancelVisitEdit', 'delAtt', 'kglEdit', 'kglDel', 'kgPdfDel', 'exPdfDel', 'exOpen', 'exClear', 'exAdd', 'exSample', 'exImportPaste', 'hvSave', 'hvReset', 'hvNow', 'hvEdit', 'hvDel', 'dzAddLeave', 'dzAddHoliday', 'dzOpenLv', 'exportData', 'importData', 'galleryFileInput', 'handleGalleryFiles'];
+  const fa = () => window.fbsAuth;
+  const cloud = () => !!fa();                                   // ক্লাউড লগইন কনফিগ করা থাকলেই নিয়ম প্রযোজ্য (না থাকলে আগের মতো খোলা)
+  const role = () => (fa() && fa().role) || 'viewer';
+  const isAdmin = () => !cloud() || role() === 'admin';
+  const ro = () => cloud() && !isAdmin();
+  const rj = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const norm = s => String(s || '').trim().replace(/^জনাব\s+/, '');
+  const toBnN = n => String(n).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+  const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  function toast(m) {
+    let e = document.getElementById('kgAccToast'); if (!e) { e = document.createElement('div'); e.id = 'kgAccToast'; document.body.appendChild(e); }
+    e.textContent = m; e.style.opacity = 1; clearTimeout(e._t); e._t = setTimeout(() => e.style.opacity = 0, 3200);
+  }
+  let lastWarn = 0; const warn = () => { const n = Date.now(); if (n - lastWarn > 2500) { lastWarn = n; toast(fa() && fa().user ? 'এই কাজ শুধু অ্যাডমিন করতে পারেন।' : 'সম্পাদনা করতে অ্যাডমিন হিসেবে লগইন করুন।'); } };
+
+  // ---- ১) লেখা আটকানো: অ্যাডমিন ছাড়া আনুষ্ঠানিক কোনো তথ্য এই ডিভাইসেও বদলাবে না (ক্লাউডে বদলানো আটকায় firestore.rules) ----
+  const oSet = Storage.prototype.setItem, oRem = Storage.prototype.removeItem;
+  const blocked = k => {
+    if (!ro() || (fa() && fa().applying)) return false;
+    if (k === ATT) return !(fa().user && role() === 'teacher');            // হাজিরা: শুধু লগইন করা শিক্ষক (অ্যাডমিন ro নয়)
+    return LOCKED.indexOf(k) >= 0;
+  };
+  Storage.prototype.setItem = function (k, v) { if (this === window.localStorage && blocked(k)) { warn(); return; } return oSet.apply(this, arguments); };
+  Storage.prototype.removeItem = function (k) { if (this === window.localStorage && blocked(k)) { warn(); return; } return oRem.apply(this, arguments); };
+  // ---- ২) বাটন আটকানো (বাড়তি নিরাপত্তা; মূল আটকানো ওপরের ধাপে) ----
+  const denyRe = new RegExp('(^|[^\\w$])(' + DENY.join('|') + ')\\b');
+  document.addEventListener('click', e => {
+    if (!ro()) return;
+    const el = e.target.closest && e.target.closest('[onclick],[data-tp-act],[data-delatt]'); if (!el) return;
+    if (el.hasAttribute('data-tp-act') || el.hasAttribute('data-delatt') || denyRe.test(el.getAttribute('onclick') || '')) { e.preventDefault(); e.stopImmediatePropagation(); warn(); }
+  }, true);
+  document.addEventListener('change', e => { if (ro() && e.target && (e.target.id === 'galleryFileInput' || e.target.id === 'tpJsonIn')) { e.stopImmediatePropagation(); e.target.value = ''; warn(); } }, true);
+  // CSS দিয়ে লুকানো: নির্দিষ্ট বাটনগুলো
+  (function () {
+    const st = document.createElement('style'); st.id = 'kgAccStyle2';
+    st.textContent = DENY.filter(n => n !== 'delAtt').map(n => '.kg-ro [onclick*="' + n + '("],.kg-ro [onclick*="' + n + '\'"]').join(',') + ',.kg-ro [data-tp-act],.kg-ro [data-delatt],.kg-ro #tab-gps .kg-adm{display:none!important}';
+    document.head.appendChild(st);
+  })();
+
+  // ---- ৩) ভূমিকা অনুযায়ী ইন্টারফেস ----
+  function roleUi() {
+    document.body.classList.toggle('kg-ro', ro());
+    let bar = document.getElementById('kgRoBar');
+    if (!bar) { bar = document.createElement('div'); bar.id = 'kgRoBar'; document.body.insertBefore(bar, document.body.firstChild); }
+    const u = fa() && fa().user;
+    bar.innerHTML = u ? (role() === 'teacher' ? '<i class="fas fa-user"></i> শিক্ষক হিসেবে লগইন: ' + esc(u.email) + ' — সব দেখতে ও হাজিরা দিতে পারবেন; সম্পাদনা শুধু অ্যাডমিন।' : '<i class="fas fa-eye"></i> লগইন: ' + esc(u.email) + ' — শুধু দেখার অনুমতি।') : '<i class="fas fa-eye"></i> আপনি দর্শক হিসেবে দেখছেন — সব তথ্য দেখা ও পাঠটিকা/সার্টিফিকেট প্রিন্ট করা যাবে; সম্পাদনা শুধু অ্যাডমিন (উপরের "লগইন" বাটন)।';
+    const nav = document.getElementById('nav-teachers'); if (nav) { const w = document.createTreeWalker(nav, NodeFilter.SHOW_TEXT); let n, last; while ((n = w.nextNode())) if (n.nodeValue.trim()) last = n; if (last) last.nodeValue = ro() ? 'শিক্ষক তালিকা' : 'শিক্ষক প্রোফাইল'; }
+    const lb = document.getElementById('dzLogoutBtn'); if (lb) { const w = document.createTreeWalker(lb, NodeFilter.SHOW_TEXT); let n, last; while ((n = w.nextNode())) if (n.nodeValue.trim()) last = n; if (last) last.nodeValue = cloud() && !u ? 'লগইন' : 'লগআউট'; lb.title = u ? 'অ্যাকাউন্ট / লগআউট' : 'অ্যাডমিন/শিক্ষক লগইন'; }
+    // বন্ধ ট্যাবে থাকলে ড্যাশবোর্ডে ফিরিয়ে আনা
+    if (ro()) { ['backup'].forEach(t => { const s = document.getElementById('tab-' + t); if (s && !s.classList.contains('hidden') && typeof window.switchTab === 'function') window.switchTab('dashboard'); }); }
+    [['gpsLatLng', '.grid'], ['gpsRadius', '.flex-wrap']].forEach(x => { const e = document.getElementById(x[0]), g = e && e.closest(x[1]); if (g) g.classList.add('kg-adm'); });
+    renderTList(); renderAutoCard(); relabel();
+  }
+
+  // ---- ৪) শিক্ষক তালিকা (সবার জন্য, শুধু দেখা) ----
+  const isVac = t => /শূণ্য|শূন্য/.test(t.name || '') || t.svc === 'অবসর' || t.svc === 'বদলি';
+  const presentToday = t => rj(ATT, []).some(r => r && !r.del && r.date === today() && norm(r.name) === norm(t.name) && r.inAt);
+  function renderTList() {
+    const sec = document.getElementById('tab-teachers'); if (!sec) return;
+    let box = document.getElementById('kgTList');
+    if (!ro()) { if (box) box.remove(); return; }
+    if (!box) { box = document.createElement('div'); box.id = 'kgTList'; sec.insertBefore(box, sec.firstChild); }
+    const q = (document.getElementById('kgTSearch') || {}).value || '';
+    const list = (rj(TK, []) || []).filter(t => t && !isVac(t) && (!q || (norm(t.name) + ' ' + (t.desig || '') + ' ' + (t.subj || '')).indexOf(q) >= 0));
+    const on = list.filter(presentToday).length;
+    box.innerHTML = '<h2><i class="fas fa-chalkboard-user"></i> শিক্ষক তালিকা</h2><p class="kt-sub">আজ সক্রিয় (উপস্থিত): ' + toBnN(on) + ' জন • ছুটি/অনুপস্থিত: ' + toBnN(list.length - on) + ' জন — জিপিএস হাজিরা অনুযায়ী স্বয়ংক্রিয়। বিস্তারিত প্রোফাইল শুধু অ্যাডমিন দেখতে পারেন।</p>' +
+      '<input id="kgTSearch" placeholder="🔍 নাম / পদবি / বিষয় দিয়ে খুঁজুন..." value="' + esc(q) + '">' +
+      '<div class="kt-grid">' + (list.map(t => { const a = presentToday(t); return '<div class="kt-c">' + (t.photo ? '<img class="kt-p" src="' + esc(t.photo) + '" alt="" onerror="this.style.visibility=\'hidden\'">' : '<span class="kt-p">' + esc(norm(t.name).charAt(0)) + '</span>') + '<div><div class="kt-n">' + esc(norm(t.name)) + '</div><div class="kt-d">' + esc(t.desig || '') + (t.subj ? ' • ' + esc(t.subj) : '') + '</div></div><span class="kt-s ' + (a ? 'on' : 'off') + '">' + (a ? 'সক্রিয়' : 'ছুটি') + '</span></div>'; }).join('') || '<p class="kt-sub">কোনো শিক্ষকের তথ্য নেই।</p>') + '</div>';
+    const si = document.getElementById('kgTSearch'); if (si) { si.oninput = () => { const p = si.selectionStart; renderTList(); const n = document.getElementById('kgTSearch'); n.focus(); try { n.setSelectionRange(p, p); } catch (e) {} }; }
+  }
+  document.addEventListener('click', e => { const b = e.target.closest && e.target.closest('#nav-teachers'); if (b) setTimeout(renderTList, 60); });
+
+  // ---- ৫) অবস্থার লেখা: "সক্রিয়" নইলে "ছুটি" ----
+  function relabel() {
+    ['tpBody', 'tpSync'].forEach(id => { const r = document.getElementById(id); if (!r) return; const w = document.createTreeWalker(r, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { if (n.nodeValue.indexOf('এখনও আসেননি') >= 0) n.nodeValue = n.nodeValue.replace('এখনও আসেননি', 'ছুটি'); else if (n.nodeValue.indexOf('এখনও হাজিরা দেননি') >= 0) n.nodeValue = n.nodeValue.replace('এখনও হাজিরা দেননি', 'ছুটি'); } });
+  }
+  function watchLabels() { ['tpBody', 'tpSync'].forEach(id => { const r = document.getElementById(id); if (r && !r._kgObs) { r._kgObs = new MutationObserver(() => relabel()); r._kgObs.observe(r, { childList: true, subtree: true }); } }); }
+
+  // ---- ৬) স্বয়ংক্রিয় জিপিএস হাজিরা ----
+  const autoCfg = () => { const c = rj(AUTO, null) || {}; return { on: c.on !== false, radius: c.radius > 0 ? Number(c.radius) : 300 }; };
+  const hav = (a, b) => { const R = 6371000, r = x => x * Math.PI / 180, dl = r(b.lat - a.lat), dg = r(b.lng - a.lng), h = Math.sin(dl / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dg / 2) ** 2; return 2 * R * Math.asin(Math.min(1, Math.sqrt(h))); };
+  const teacherOf = email => (rj(TK, []) || []).find(t => t && String(t.mail || '').trim().toLowerCase() === email);
+  let wid = null, autoMsg = '';
+  const stopWatch = () => { if (wid !== null) { try { navigator.geolocation.clearWatch(wid); } catch (e) {} wid = null; } };
+  function setAutoMsg(t) { autoMsg = t; const e = document.getElementById('kgAutoMine'); if (e) e.textContent = t; }
+  function autoTry() {
+    if (!cloud() || wid !== null) return;
+    const u = fa().user; if (!u || (role() !== 'teacher' && role() !== 'admin')) return;
+    const t = teacherOf(u.email); if (!t) { setAutoMsg(''); return; }
+    const c = autoCfg(); if (!c.on) { setAutoMsg('স্বয়ংক্রিয় হাজিরা অ্যাডমিন বন্ধ রেখেছেন।'); return; }
+    const sg = rj(GEO, null); if (!sg || !isFinite(sg.lat)) { setAutoMsg('বিদ্যালয়ের অবস্থান এখনও ঠিক করা হয়নি (অ্যাডমিনকে জানান)।'); return; }
+    if (window.dzClosedToday && window.dzClosedToday()) { setAutoMsg('আজ বিদ্যালয় বন্ধ।'); return; }
+    const nm = norm(t.name);
+    if (rj(ATT, []).some(r => r && !r.del && r.date === today() && norm(r.name) === nm && r.inAt)) { setAutoMsg('আজকের হাজিরা সম্পন্ন — আপনি এখন "সক্রিয়"।'); return; }
+    if (!navigator.geolocation || window.isSecureContext === false) { setAutoMsg('এই ব্রাউজারে জিপিএস চলে না (https লাগে)।'); return; }
+    setAutoMsg('আপনার অবস্থান দেখা হচ্ছে… বিদ্যালয়ের ' + toBnN(c.radius) + ' মিটারের মধ্যে এলে হাজিরা নিজে হয়ে যাবে।');
+    wid = navigator.geolocation.watchPosition(p => {
+      const g = { lat: p.coords.latitude, lng: p.coords.longitude }, acc = p.coords.accuracy || 9999, dist = hav(g, sg), cc = autoCfg();
+      if (acc > 200) return;                                                       // দুর্বল সংকেত — গণ্য নয়
+      if (dist > cc.radius) { setAutoMsg('আপনি বিদ্যালয় থেকে প্রায় ' + toBnN(Math.round(dist)) + ' মিটার দূরে — ' + toBnN(cc.radius) + ' মিটারের মধ্যে এলে হাজিরা নিজে হবে।'); return; }
+      const recs = rj(ATT, []); if (recs.some(r => r && !r.del && r.date === today() && norm(r.name) === nm && r.inAt)) { stopWatch(); return; }
+      const now = Date.now(); recs.push({ id: now + '-' + Math.floor(Math.random() * 1e6), name: nm, date: today(), email: u.email, inAt: now, inGeo: { lat: g.lat, lng: g.lng, acc: Math.round(acc), dist: Math.round(dist) }, auto: true });
+      stopWatch(); try { localStorage.setItem(ATT, JSON.stringify(recs)); } catch (e) { setAutoMsg('হাজিরা সংরক্ষণ করা যায়নি।'); return; }
+      setAutoMsg('✅ আজকের হাজিরা স্বয়ংক্রিয়ভাবে সম্পন্ন — আপনি এখন "সক্রিয়"।'); toast('✅ স্বয়ংক্রিয় হাজিরা সম্পন্ন (স্কুল থেকে ' + toBnN(Math.round(dist)) + ' মিটার)');
+      try { if (typeof window.onRemoteData === 'function') window.onRemoteData(new Set([ATT])); } catch (e) {} renderTList(); relabel();
+    }, e => { if (e && e.code === 1) { stopWatch(); setAutoMsg('স্বয়ংক্রিয় হাজিরার জন্য ব্রাউজারে "Location" অনুমতি দিন।'); } else setAutoMsg('অবস্থান পাওয়া যাচ্ছে না — ফোনের লোকেশন চালু আছে কি দেখুন; সংকেত পেলেই আবার চেষ্টা হবে।'); }, { enableHighAccuracy: true, maximumAge: 20000, timeout: 60000 });
+  }
+  // ---- ৭) অ্যাডমিনের নিয়ন্ত্রণ-কার্ড (জিপিএস ট্যাব) ----
+  function renderAutoCard() {
+    const tab = document.getElementById('tab-gps'); if (!tab) return;
+    let card = document.getElementById('kgAutoCard');
+    if (!card) {
+      const ref = document.getElementById('attAuthBox'); const anchor = ref && ref.closest('.bg-white'); if (!anchor) return;
+      card = document.createElement('div'); card.id = 'kgAutoCard'; card.className = 'bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3';
+      anchor.parentNode.insertBefore(card, anchor);
+    }
+    const c = autoCfg(), adm = isAdmin() && cloud();
+    card.innerHTML = '<h3 class="text-lg font-bold text-slate-800"><i class="fas fa-satellite-dish text-brand-600"></i> স্বয়ংক্রিয় জিপিএস হাজিরা</h3>' +
+      '<p class="kg-auto-state text-slate-700">অবস্থা: ' + (c.on ? '<span class="text-emerald-700">চালু</span> — শিক্ষক বিদ্যালয়ের ' + toBnN(c.radius) + ' মিটারের মধ্যে এলে হাজিরা নিজে হয় ও তালিকায় "সক্রিয়" দেখায়; নইলে "ছুটি"।' : '<span class="text-rose-600">বন্ধ</span> — শিক্ষক নিজে বাটন চেপে হাজিরা দেবেন।') + '</p>' +
+      '<p class="text-xs text-slate-500">শর্ত: শিক্ষক নিজের জিমেইলে লগইন করে সাইটটি ফোনে খুললে এবং "Location" অনুমতি দিলে।</p>' +
+      '<p id="kgAutoMine" class="text-sm font-semibold text-sky-700">' + esc(autoMsg) + '</p>' +
+      (adm ? '<div class="flex flex-wrap items-end gap-3 kg-adm"><label class="text-sm font-semibold"><input type="checkbox" id="kgAutoOn" ' + (c.on ? 'checked' : '') + '> স্বয়ংক্রিয় হাজিরা চালু</label><div><label class="block text-xs font-bold text-slate-700 mb-1">সীমা (মিটার)</label><input id="kgAutoRad" type="text" inputmode="numeric" value="' + c.radius + '" class="w-28 px-3 py-2 border rounded-xl text-sm"></div><button type="button" id="kgAutoSave" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold">সংরক্ষণ</button></div>' : '');
+    const sv = document.getElementById('kgAutoSave'); if (sv) sv.onclick = () => {
+      const v = parseFloat(String(document.getElementById('kgAutoRad').value).replace(/[০-৯]/g, d => '০১২৩৪৫৬৭৮৯'.indexOf(d)));
+      if (!(v >= 20 && v <= 2000)) { toast('সীমা ২০ থেকে ২০০০ মিটারের মধ্যে দিন।'); return; }
+      localStorage.setItem(AUTO, JSON.stringify({ on: document.getElementById('kgAutoOn').checked, radius: v })); localStorage.setItem(RAD, String(v));
+      toast('সংরক্ষিত হয়েছে।'); renderAutoCard(); try { if (typeof window.renderGps === 'function') window.renderGps(); } catch (e) {}
+    };
+  }
+  function adminDefaults() {   // অ্যাডমিন প্রথমবার ঢুকলে ডিফল্ট ৩০০ মিটার
+    if (cloud() && role() === 'admin' && !localStorage.getItem(AUTO)) { localStorage.setItem(AUTO, JSON.stringify({ on: true, radius: 300 })); if (!localStorage.getItem(RAD)) localStorage.setItem(RAD, '300'); }
+  }
+  function refresh() { adminDefaults(); roleUi(); watchLabels(); stopWatch(); autoTry(); }
+  window.addEventListener('fbs-auth', refresh);
+  window.addEventListener('fbs-sync', () => { renderTList(); renderAutoCard(); relabel(); if (wid === null) autoTry(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && wid === null) autoTry(); });
+  const sw = window.switchTab; if (typeof sw === 'function') window.switchTab = function (t) { if (ro() && t === 'backup') { warn(); t = 'dashboard'; } const r = sw.call(this, t); try { if (t === 'teachers') renderTList(); if (t === 'gps') { renderAutoCard(); watchLabels(); relabel(); } } catch (e) {} return r; };
+  const dz = document.getElementById('dzLogoutBtn'); if (dz) dz.addEventListener('click', () => {}, true);
+  window.addEventListener('DOMContentLoaded', () => { roleUi(); watchLabels(); });
+  setTimeout(refresh, 800); setTimeout(refresh, 3000);
+  window.kgAccess = { ro, isAdmin, role, autoTry };
+})();
+</script>
+
 </body>
 </html>
